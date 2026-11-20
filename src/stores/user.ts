@@ -24,7 +24,8 @@ export const useUserStore = defineStore('user', () => {
     const roleMap: Record<number, string> = {
       0: '管理员',
       1: '调度员',
-      2: '配送员'
+      2: '配送员',
+      3: '客户'
     }
     return userInfo.value ? roleMap[userInfo.value.role] || '未知角色' : ''
   })

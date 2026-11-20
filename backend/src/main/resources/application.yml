@@ -76,6 +76,11 @@ mybatis-plus:
       # 表名前缀
       table-prefix: t_
 
+# 派单配置
+dispatch:
+  # 下单后是否自动派单（false：订单进入待调度，全部由调度员手工分配）
+  auto-assign-on-create: true
+
 # JWT配置
 jwt:
   # 密钥（生产环境请修改并放入配置中心）
@@ -117,14 +122,4 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
 
-name: build
-on: [push, pull_request]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 18 }
-      - run: npm ci
-      - run: npm run build
+

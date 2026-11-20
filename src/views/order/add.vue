@@ -169,8 +169,17 @@ const handleSubmit = async () => {
     
     submitLoading.value = true
     try {
-      await createOrder(formData)
-      ElMessage.success('订单创建成功')
+      const res = await createOrder(formData)
+      const dispatch = res.data.data as { autoAssigned?: boolean; dispatchMessage?: string } | undefined
+      if (dispatch?.autoAssigned) {
+        ElMessage.success(dispatch.dispatchMessage || '订单创建成功，已自动分配配送员')
+      } else {
+        ElMessage.success(
+          dispatch?.dispatchMessage
+            ? `订单创建成功：${dispatch.dispatchMessage}`
+            : '订单创建成功'
+        )
+      }
       router.push('/order/list')
     } catch (error) {
       console.error('创建订单失败:', error)

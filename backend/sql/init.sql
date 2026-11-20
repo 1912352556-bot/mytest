@@ -312,9 +312,9 @@ CREATE TABLE `t_delivery_track` (
 
 -- 初始化管理员账号（密码：123456，BCrypt加密）
 INSERT INTO `t_user` (`username`, `password`, `realname`, `phone`, `email`, `gender`, `role`, `status`) VALUES
-('admin', '$2a$10$N.zmdrR5MaC6j4rdHdxQ/.Fv4vLuJrwEG3.ZZnj2hh3JnDvXuLSoG', '系统管理员', '13800000000', 'admin@example.com', 1, 0, 1),
-('scheduler01', '$2a$10$N.zmdrR5MaC6j4rdHdxQ/.Fv4vLuJrwEG3.ZZnj2hh3JnDvXuLSoG', '调度员张三', '13800000001', 'zhangsan@example.com', 1, 1, 1),
-('delivery01', '$2a$10$N.zmdrR5MaC6j4rdHdxQ/.Fv4vLuJrwEG3.ZZnj2hh3JnDvXuLSoG', '配送员李四', '13800000002', 'lisi@example.com', 1, 2, 1);
+('admin', '$2a$10$EKXOFOjn2Bve3t45194KkOdzGzywmeRw3yeekVf.YeURs2Z4.IaHi', '系统管理员', '13800000000', 'admin@example.com', 1, 0, 1),
+('scheduler01', '$2a$10$EKXOFOjn2Bve3t45194KkOdzGzywmeRw3yeekVf.YeURs2Z4.IaHi', '调度员张三', '13800000001', 'zhangsan@example.com', 1, 1, 1),
+('delivery01', '$2a$10$EKXOFOjn2Bve3t45194KkOdzGzywmeRw3yeekVf.YeURs2Z4.IaHi', '配送员李四', '13800000002', 'lisi@example.com', 1, 2, 1);
 
 -- 初始化数据字典类型
 INSERT INTO `t_dict_type` (`dict_code`, `dict_name`, `description`) VALUES

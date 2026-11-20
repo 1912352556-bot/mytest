@@ -6,12 +6,15 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getPendingScheduleOrders } from '@/api/order'
-import { createScheduleTask, batchCreateScheduleTasks } from '@/api/schedule'
+import { createScheduleTask, batchCreateScheduleTasks, autoAssignTasks } from '@/api/schedule'
 
 const router = useRouter()
 
 /* 加载状态 */
 const loading = ref(false)
+
+/* 自动分配进行中 */
+const autoAssigning = ref(false)
 
 /* 待调度订单列表 */
 const pendingOrders = ref<Order[]>([])
@@ -72,10 +75,40 @@ const handleBatchSchedule = async () => {
     
     const orderIds = selectedOrders.value.map(o => o.id)
     const res = await batchCreateScheduleTasks(orderIds)
-    ElMessage.success(`成功创建 ${res.data.data?.success || selectedOrders.value.length} 个调度任务`)
+    const data = res.data.data as { success?: number; assigned?: number } | undefined
+    ElMessage.success(
+      `已创建 ${data?.success ?? orderIds.length} 个调度任务，自动分配 ${data?.assigned ?? 0} 单`
+    )
     fetchPendingOrders()
   } catch (e) {
     /* 取消操作 */
+  }
+}
+
+/* 一键自动分配：给所有待调度订单匹配配送员 */
+const handleAutoAssign = async () => {
+  try {
+    await ElMessageBox.confirm(
+      '将为所有「待调度」订单自动匹配配送员（优先任务数最少、未休息的人），确认继续吗？',
+      '自动分配',
+      { confirmButtonText: '开始分配', cancelButtonText: '取消', type: 'info' }
+    )
+  } catch (e) {
+    return
+  }
+  autoAssigning.value = true
+  try {
+    const res = await autoAssignTasks()
+    const data = res.data.data as { assigned?: number; failed?: number } | undefined
+    ElMessage.success(
+      `自动分配完成：成功 ${data?.assigned ?? 0} 单` +
+        (data?.failed ? `，${data.failed} 单暂无可用配送员` : '')
+    )
+    fetchPendingOrders()
+  } catch (error) {
+    console.error('自动分配失败:', error)
+  } finally {
+    autoAssigning.value = false
   }
 }
 
@@ -103,6 +136,10 @@ onMounted(() => {
         <div class="card-header">
           <span>待调度订单</span>
           <div class="header-actions">
+            <el-button type="success" :loading="autoAssigning" @click="handleAutoAssign">
+              <el-icon><MagicStick /></el-icon>
+              自动分配
+            </el-button>
             <el-button type="primary" :disabled="selectedOrders.length === 0" @click="handleBatchSchedule">
               <el-icon><Operation /></el-icon>
               批量调度 ({{ selectedOrders.length }})

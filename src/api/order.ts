@@ -18,9 +18,9 @@ export const getOrderDetail = (id: string) =>
     method: 'get'
   })
 
-/** 新增订单 */
+/** 新增订单（后端会在下单后自动派单，返回派单结果） */
 export const createOrder = (data: CreateOrderRequest) =>
-  request<Result<Order>>({
+  request<Result<{ orderId: string; autoAssigned?: boolean; dispatchMessage?: string; deliveryPersonName?: string }>>({
     url: '/order',
     method: 'post',
     data

@@ -1,4 +1,4 @@
-# 生鲜即时配送调度系统aaa
+# 生鲜即时配送调度系统
 
 面向中小型生鲜零售 / 前置仓企业的调度管理系统，覆盖「下单 → 调度 → 配送 → 库存」全流程。项目由原「预制菜调度管理系统」改造而来，商品模型已切换为生鲜商品（蔬菜、水果、肉禽蛋、水产海鲜、乳品烘焙、粮油调味），代码层英文标识（`t_dish`、`Dish`、`/dish`）保持不变，避免存量数据与接口迁移成本。
 
@@ -42,6 +42,45 @@ a-a-a/
 | `loss_rate` | DECIMAL(5,2) | 损耗率（%），用于库存与采购预估 |
 
 商品分类：蔬菜 / 水果 / 肉禽蛋 / 水产海鲜 / 乳品烘焙 / 粮油调味，分类走 `t_dish_category` 表，前端不再写死品类。
+
+## 移动端（`/m`）
+
+移动端与 PC 端共用同一个工程和同一套后端接口，使用 Vant 4 组件库，按角色分为两个入口：
+
+| 角色 | 账号（密码 123456） | 入口 | 功能 |
+| --- | --- | --- | --- |
+| 客户（role=3） | `customer01` / `customer02` | `/m/customer/home` | 浏览生鲜商品、加入购物车、地图选点下单、我的订单、取消订单 |
+| 配送员（role=2） | `delivery01` | `/m/courier/tasks` | 查看分配给自己的配送任务、开始配送、确认送达、异常上报、地图导航、工作状态切换 |
+
+- 登录页：`http://localhost:8088/m/login`（管理员 / 调度员请使用 PC 端）
+- 客户下单后进入「待调度」，由 PC 端调度员在「调度管理 → 任务分配」指派给配送员，配送员即可在移动端看到该任务
+- 移动端接口统一在 `MobileController`（`/mobile/**`），身份由 JWT 解析，客户和配送员的接口互相隔离
+- 升级已有数据库：`mysql -uroot -p goods_schedule < backend/sql/upgrade_mobile.sql`（新增客户账号、扩展角色说明、补齐配送员档案关联，可重复执行）
+
+### 地图选点
+
+客户移动端下单与 PC 端「新增订单」使用同一套高德地图 SDK（`index.html` 中加载 Geocoder / PlaceSearch 插件）：
+
+- 移动端组件：`src/components/MobileMapPicker.vue`（Vant 全屏弹层：搜索地址、点击/拖动地图选点、重新定位、逆地理编码回填）
+- PC 端组件：`src/components/MapPicker.vue`（Element Dialog 版，原有逻辑）
+- 选点结果会写入订单的 `longitude` / `latitude`，配送员任务详情出现「导航」按钮（唤起高德地图），客户订单详情出现「查看地图选点」
+- 已有库需补充坐标字段：`mysql -uroot -p goods_schedule < backend/sql/upgrade_order_location.sql`
+
+### 自动派单
+
+移动端客户下单、PC 端新增订单都会在创建订单后立即自动派单（`AutoDispatchService`）：
+
+1. 建调度任务（已有则复用）
+2. 选配送员：必须已绑定登录账号、未处于「休息」，按当前任务数升序 + id 升序取最闲的一个
+3. 建配送任务（待取货），订单状态置为「已调度」，配送员任务数 +1
+4. 没有可用配送员时订单留在「待调度」，PC「待调度订单」页可点「自动分配」批量补救（批量调度也会顺带自动分配）
+
+配套规则：
+
+- 开关：`backend/src/main/resources/application.yml` 中 `dispatch.auto-assign-on-create`，设为 `false` 则全部回到人工调度
+- 客户取消订单 / 配送员上报异常时，未完成的配送任务会被置为异常、调度任务取消、配送员任务额度归还；异常单还会退回「待调度」，可重新自动分配
+- `/schedule/available-persons` 返回「已绑定账号且未休息」的配送员，按任务数升序，供调度员手工指派
+- 演示账号密码统一为 123456：`mysql -uroot -p goods_schedule < backend/sql/fix_demo_passwords.sql`（修复历史种子数据里与文档不符的密文）
 
 ## 启动步骤
 

@@ -34,6 +34,7 @@ public class ScheduleController {
     private final DeliveryPersonMapper deliveryPersonMapper;
     private final OrderMapper orderMapper;
     private final DeliveryTaskMapper deliveryTaskMapper;
+    private final com.prefab.service.AutoDispatchService autoDispatchService;
 
     @Operation(summary = "获取调度任务列表")
     @GetMapping("/list")
@@ -124,14 +125,41 @@ public class ScheduleController {
 
     @Operation(summary = "批量创建调度任务")
     @PostMapping("/batch")
-    public Result<Object> batchCreateTasks(@RequestBody Object data) {
-        return Result.success(new BatchResult(0, 0));
+    public Result<Object> batchCreateTasks(@RequestBody BatchRequest request) {
+        if (request == null || request.getOrderIds() == null || request.getOrderIds().isEmpty()) {
+            return Result.fail("请选择要调度的订单");
+        }
+        int success = 0;
+        int fail = 0;
+        int assigned = 0;
+        for (Long orderId : request.getOrderIds()) {
+            try {
+                /* 建任务 + 立即尝试自动分配，分配不到就留在待分配列表 */
+                com.prefab.service.AutoDispatchService.DispatchResult result =
+                        autoDispatchService.autoAssignOrder(orderId);
+                success++;
+                if (result.isAssigned()) {
+                    assigned++;
+                }
+            } catch (Exception e) {
+                fail++;
+            }
+        }
+        java.util.Map<String, Object> data = new java.util.LinkedHashMap<>();
+        data.put("success", success);
+        data.put("fail", fail);
+        data.put("assigned", assigned);
+        return Result.success(data);
     }
 
     @Operation(summary = "自动分配调度任务")
     @PostMapping("/auto-assign")
     public Result<Object> autoAssignTasks(@RequestBody(required = false) Object data) {
-        return Result.success(new AssignResult(0, 0));
+        int[] result = autoDispatchService.autoAssignPendingOrders(200);
+        java.util.Map<String, Object> summary = new java.util.LinkedHashMap<>();
+        summary.put("assigned", result[0]);
+        summary.put("failed", result[1]);
+        return Result.success(summary);
     }
 
     @Operation(summary = "手动分配调度任务")
@@ -252,8 +280,12 @@ public class ScheduleController {
     @Operation(summary = "获取可分配的配送人员列表")
     @GetMapping("/available-persons")
     public Result<List<DeliveryPerson>> getAvailablePersons() {
+        /* 可分配 = 已关联登录账号且未休息；按当前任务数升序，方便调度员优先选空闲的人 */
         LambdaQueryWrapper<DeliveryPerson> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(DeliveryPerson::getStatus, 0); // 空闲
+        wrapper.isNotNull(DeliveryPerson::getUserId)
+               .ne(DeliveryPerson::getStatus, 2)
+               .orderByAsc(DeliveryPerson::getCurrentTaskCount)
+               .orderByAsc(DeliveryPerson::getId);
         List<DeliveryPerson> persons = deliveryPersonMapper.selectList(wrapper);
         return Result.success(persons);
     }
@@ -265,6 +297,11 @@ public class ScheduleController {
         private Long assigneeId;
         private Integer priority;
         private String remark;
+    }
+
+    @lombok.Data
+    static class BatchRequest {
+        private java.util.List<Long> orderIds;
     }
 
     @lombok.Data

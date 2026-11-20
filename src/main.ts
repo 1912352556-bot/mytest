@@ -1,6 +1,10 @@
 /* 导入主样式 */
 import '@/styles/main.scss'
 import { createApp } from 'vue'
+/* 导入移动端 UI 库 Vant 及其样式（PC 端页面不使用） */
+import Vant from 'vant'
+import 'vant/lib/index.css'
+import '@/styles/mobile.scss'
 /* 导入 ElementPlus 依赖 */
 import ElementPlus from 'element-plus'
 /* 导入国际化文件 */
@@ -16,6 +20,8 @@ import '@/router/permission'
 /* 导入注册图标的工具函数 */
 import { useElIcon } from './utils/globalIcon'
 const app = createApp(App)
+/* 注册 Vant 移动端组件 */
+app.use(Vant)
 /* 加载 ElementPlus 第三方组件库 同时加载中文国际化文件 */
 app.use(ElementPlus, {
     locale: zhCn,

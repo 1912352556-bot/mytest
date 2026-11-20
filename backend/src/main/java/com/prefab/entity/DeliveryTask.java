@@ -80,4 +80,29 @@ public class DeliveryTask implements Serializable {
     @TableField(exist = false)
     @Schema(description = "客户电话")
     private String customerPhone;
+
+    /** 期望配送时间（非数据库字段，来自订单） */
+    @TableField(exist = false)
+    @Schema(description = "期望配送时间")
+    private java.time.LocalDateTime expectedDeliveryTime;
+
+    /** 订单状态（非数据库字段） */
+    @TableField(exist = false)
+    @Schema(description = "订单状态：0-待调度 1-已调度 2-配送中 3-已完成 4-已取消")
+    private Integer orderStatus;
+
+    /** 订单金额（非数据库字段） */
+    @TableField(exist = false)
+    @Schema(description = "订单金额")
+    private java.math.BigDecimal totalAmount;
+
+    /** 配送地址经度（非数据库字段，来自订单） */
+    @TableField(exist = false)
+    @Schema(description = "配送地址经度")
+    private java.math.BigDecimal longitude;
+
+    /** 配送地址纬度（非数据库字段，来自订单） */
+    @TableField(exist = false)
+    @Schema(description = "配送地址纬度")
+    private java.math.BigDecimal latitude;
 }
