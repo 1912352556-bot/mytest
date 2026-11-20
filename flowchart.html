@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #fff;
+    font-family: "Microsoft YaHei", "黑体", sans-serif;
+    padding: 40px;
+    width: 700px;
+  }
+  h2 {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+  }
+  .flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .node {
+    border: 2px solid #000;
+    padding: 10px 30px;
+    font-size: 14px;
+    text-align: center;
+    background: #fff;
+    min-width: 260px;
+  }
+  .node.round {
+    border-radius: 30px;
+  }
+  .node.diamond {
+    transform: none;
+    clip-path: none;
+    border: 2px solid #000;
+    padding: 10px 20px;
+    background: #fff;
+    min-width: 260px;
+    position: relative;
+  }
+  .diamond-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  .diamond-shape {
+    width: 260px;
+    height: 60px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .diamond-shape::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border: 2px solid #000;
+    transform: rotate(0deg);
+  }
+  /* Use a table-like approach for diamond */
+  .rhombus {
+    width: 280px;
+    height: 70px;
+    border: 2px solid #000;
+    transform: skewX(-20deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+  }
+  .rhombus span {
+    transform: skewX(20deg);
+    font-size: 14px;
+    font-weight: bold;
+    padding: 0 10px;
+    text-align: center;
+  }
+  .arrow {
+    font-size: 22px;
+    margin: 3px 0;
+    color: #000;
+  }
+  .branch {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    width: 100%;
+    justify-content: center;
+    margin: 3px 0;
+  }
+  .branch-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .branch-side {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    margin-top: 20px;
+  }
+  .side-label {
+    font-size: 12px;
+    color: #333;
+  }
+  .side-node {
+    border: 2px solid #000;
+    padding: 8px 14px;
+    font-size: 13px;
+    text-align: center;
+    background: #fff;
+    white-space: nowrap;
+  }
+  .parallel {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 3px 0;
+  }
+  .parallel .node {
+    min-width: 180px;
+  }
+  .decision-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    gap: 0;
+    position: relative;
+  }
+  .d-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .d-right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    position: absolute;
+    right: 0;
+  }
+  .label {
+    font-size: 12px;
+    color: #555;
+  }
+</style>
+</head>
+<body>
+<h2>生鲜即时配送调度系统 — 业务流程图</h2>
+<div class="flow">
+
+  <div class="node round"><b>开始 / 客户下单</b></div>
+  <div class="arrow">↓</div>
+
+  <div class="node">录入订单信息（手动 / 批量导入）</div>
+  <div class="arrow">↓</div>
+
+  <div class="rhombus"><span>订单信息校验？</span></div>
+  <div style="display:flex;width:100%;justify-content:center;align-items:flex-start;gap:30px;">
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <span class="label">是 ↓</span>
+    </div>
+    <div style="display:flex;flex-direction:row;align-items:center;gap:6px;margin-top:10px;">
+      <span class="label">否 →</span>
+      <div class="side-node">返回错误提示</div>
+      <span class="label">→ 重新录入</span>
+    </div>
+  </div>
+
+  <div class="node">订单保存 — 状态：【待调度】</div>
+  <div class="arrow">↓</div>
+
+  <div class="rhombus"><span>超过 2 小时未调度？</span></div>
+  <div style="display:flex;width:100%;justify-content:center;align-items:flex-start;gap:30px;">
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <span class="label">否 ↓</span>
+    </div>
+    <div style="display:flex;flex-direction:row;align-items:center;gap:6px;margin-top:10px;">
+      <span class="label">是 →</span>
+      <div class="side-node">触发超时预警通知</div>
+    </div>
+  </div>
+
+  <div class="node">调度员查看待调度列表</div>
+  <div class="arrow">↓</div>
+
+  <div class="node">自动分配调度任务（按区域 / 时间）<br><span style="font-size:12px;color:#555">支持手动调整 · 记录调度日志</span></div>
+  <div class="arrow">↓</div>
+
+  <div class="node">订单状态更新 — 状态：【已调度】</div>
+  <div class="arrow">↓</div>
+
+  <div class="node">配送员接收配送任务</div>
+  <div class="arrow">↓</div>
+
+  <div class="node">开始配送 — 状态：【配送中】<br><span style="font-size:12px;color:#555">记录配送轨迹</span></div>
+  <div class="arrow">↓</div>
+
+  <div class="rhombus"><span>配送完成确认？</span></div>
+  <div style="display:flex;width:100%;justify-content:center;align-items:flex-start;gap:30px;">
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <span class="label">是 ↓</span>
+    </div>
+    <div style="display:flex;flex-direction:row;align-items:center;gap:6px;margin-top:10px;">
+      <span class="label">否 →</span>
+      <div class="side-node">配送员更新状态 / 异常处理</div>
+    </div>
+  </div>
+
+  <div class="parallel">
+    <div class="node" style="min-width:200px;">订单状态：【已完成】</div>
+    <div class="node" style="min-width:200px;">触发库存扣减<br><span style="font-size:12px;color:#555">事务保障，库存 ≥ 0</span></div>
+  </div>
+  <div class="arrow">↓</div>
+
+  <div class="rhombus"><span>库存低于预警阈值？</span></div>
+  <div style="display:flex;width:100%;justify-content:center;align-items:flex-start;gap:30px;">
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <span class="label">否 ↓</span>
+    </div>
+    <div style="display:flex;flex-direction:row;align-items:center;gap:6px;margin-top:10px;">
+      <span class="label">是 →</span>
+      <div class="side-node">触发库存预警通知</div>
+    </div>
+  </div>
+
+  <div class="node">统计数据更新（日报 / 月报）</div>
+  <div class="arrow">↓</div>
+
+  <div class="node round"><b>流程结束</b></div>
+
+</div>
+</body>
+</html>

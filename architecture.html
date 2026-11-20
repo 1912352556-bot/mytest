@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #fff;
+    font-family: "Microsoft YaHei", "黑体", sans-serif;
+    padding: 40px;
+    width: 900px;
+  }
+  h2 {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+  }
+  .diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .layer {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    border: 2px solid #000;
+    margin-bottom: 0;
+  }
+  .layer-label {
+    width: 80px;
+    min-width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    border-right: 2px solid #000;
+    writing-mode: horizontal-tb;
+    padding: 10px 5px;
+    text-align: center;
+  }
+  .layer-body {
+    flex: 1;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .layer-body .desc {
+    font-size: 13px;
+    color: #333;
+  }
+  .boxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .box {
+    border: 1.5px solid #000;
+    padding: 5px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .arrow {
+    font-size: 22px;
+    line-height: 1;
+    margin: 4px 0;
+    color: #000;
+  }
+  .note {
+    font-size: 12px;
+    color: #555;
+    margin-top: 4px;
+  }
+  .grid-2row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+</style>
+</head>
+<body>
+<h2>生鲜即时配送调度系统 — 系统架构图</h2>
+<div class="diagram">
+
+  <!-- 用户层 -->
+  <div class="layer">
+    <div class="layer-label">用户层</div>
+    <div class="layer-body">
+      <div class="boxes">
+        <div class="box">管理员</div>
+        <div class="box">调度员</div>
+        <div class="box">配送员</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <!-- 前端层 -->
+  <div class="layer">
+    <div class="layer-label">前端层</div>
+    <div class="layer-body">
+      <div class="desc">Vue3 + Vite + Element Plus &nbsp;|&nbsp; Pinia 状态管理 &nbsp;|&nbsp; Axios 请求拦截</div>
+      <div class="boxes">
+        <div class="box">登录页</div>
+        <div class="box">订单管理</div>
+        <div class="box">调度管理</div>
+        <div class="box">配送管理</div>
+        <div class="box">库存管理</div>
+        <div class="box">统计分析</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <!-- 网关层 -->
+  <div class="layer">
+    <div class="layer-label">网关层</div>
+    <div class="layer-body">
+      <div class="desc">Nginx 反向代理 + 负载均衡 &nbsp;|&nbsp; Spring Security + JWT 鉴权</div>
+    </div>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <!-- 后端服务层 -->
+  <div class="layer">
+    <div class="layer-label">后端服务层</div>
+    <div class="layer-body">
+      <div class="grid-2row">
+        <div class="boxes">
+          <div class="box">订单管理服务</div>
+          <div class="box">生产调度服务</div>
+          <div class="box">物流配送服务</div>
+        </div>
+        <div class="boxes">
+          <div class="box">库存管理服务</div>
+          <div class="box">用户权限服务</div>
+          <div class="box">统计分析服务</div>
+        </div>
+      </div>
+      <div class="note">SpringBoot 3.2 + MyBatis-Plus 3.5 + MySQL 8.0</div>
+    </div>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <!-- 数据层 -->
+  <div class="layer">
+    <div class="layer-label">数据层</div>
+    <div class="layer-body">
+      <div class="boxes">
+        <div class="box">MySQL 8.0（主数据库）</div>
+        <div class="box">Redis（缓存）</div>
+        <div class="box">数据字典</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <!-- 部署层 -->
+  <div class="layer">
+    <div class="layer-label">部署层</div>
+    <div class="layer-body">
+      <div class="desc">Docker + docker-compose 容器化部署（后端 + MySQL + Redis）</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

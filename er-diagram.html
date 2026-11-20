@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #fff;
+    font-family: "Microsoft YaHei", "黑体", sans-serif;
+    padding: 40px;
+    width: 1100px;
+  }
+  h2 {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+  }
+  .er-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+  .entity {
+    border: 2px solid #000;
+    font-size: 13px;
+  }
+  .entity .header {
+    background: #000;
+    color: #fff;
+    padding: 6px 10px;
+    font-weight: bold;
+    font-size: 13px;
+    text-align: center;
+  }
+  .entity .field {
+    padding: 4px 10px;
+    border-top: 1px solid #ccc;
+    font-size: 12px;
+    color: #000;
+  }
+  .entity .field.pk {
+    font-weight: bold;
+  }
+  .entity .field.fk {
+    font-style: italic;
+    color: #333;
+  }
+  .relations {
+    margin-top: 30px;
+    border: 2px solid #000;
+    padding: 16px 20px;
+  }
+  .relations h3 {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #000;
+    padding-bottom: 6px;
+  }
+  .rel-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .rel-table th, .rel-table td {
+    border: 1px solid #000;
+    padding: 6px 10px;
+    text-align: left;
+  }
+  .rel-table th {
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+<h2>生鲜即时配送调度系统 — 数据库 ER 图</h2>
+
+<div class="er-grid">
+
+  <!-- sys_user -->
+  <div class="entity">
+    <div class="header">sys_user 用户表</div>
+    <div class="field pk">id &nbsp; PK</div>
+    <div class="field">username</div>
+    <div class="field">password</div>
+    <div class="field">real_name</div>
+    <div class="field">role &nbsp; (ADMIN/DISPATCHER/DELIVERER)</div>
+    <div class="field">status</div>
+    <div class="field">create_time</div>
+  </div>
+
+  <!-- sys_dict -->
+  <div class="entity">
+    <div class="header">sys_dict 数据字典</div>
+    <div class="field pk">id &nbsp; PK</div>
+    <div class="field">dict_type</div>
+    <div class="field">dict_code</div>
+    <div class="field">dict_value</div>
+    <div class="field">sort</div>
+    <div class="field">status</div>
+    <div class="field">remark</div>
+  </div>
+
+  <!-- dish -->
+  <div class="entity">
+    <div class="header">dish 生鲜商品表</div>
+    <div class="field pk">id &nbsp; PK</div>
+    <div class="field">dish_name 商品名称</div>
+    <div class="field">dish_code 商品编码</div>
+    <div class="field fk">category_id &nbsp; FK → dish_category.id</div>
+    <div class="field">price / unit</div>
+    <div class="field">spec 规格（500g/份）</div>
+    <div class="field">shelf_life_days 保质期(天)</div>
+    <div class="field">storage_type 温层(常温/冷藏/冷冻)</div>
+    <div class="field">origin 产地</div>
+    <div class="field">loss_rate 损耗率(%)</div>
+    <div class="field">status</div>
+  </div>
+
+  <!-- inventory -->
+  <div class="entity">
+    <div class="header">inventory 库存表</div>
+    <div class="field pk">id &nbsp; PK</div>
+    <div class="field fk">dish_id &nbsp; FK → dish.id</div>
+    <div class="field">stock_qty</div>
+    <div class="field">warning_threshold</div>
+    <div class="field">last_update_time</div>
+  </div>
+
+  <!-- order_info （跨2列） -->
+  <div class="entity" style="grid-column: span 2;">
+    <div class="header">order_info 订单表（核心）</div>
+    <div class="field pk">id &nbsp; PK</div>
+    <div class="field">order_no</div>
+    <div class="field fk">dish_id &nbsp; FK → dish.id</div>
+    <div class="field">quantity</div>
+    <div class="field">delivery_address</div>
+    <div class="field">expect_time</div>
+    <div class="field">actual_time</div>
+    <div class="field">status &nbsp; (待调度/已调度/配送中/已完成/取消)</div>
+    <div class="field fk">create_by &nbsp; FK → sys_user.id</div>
+    <div class="field">create_time</div>
+    <div class="field">remark</div>
+  </div>
+
+  <!-- delivery_person -->
+  <div class="entity">
+    <div class="header">delivery_person 配送人员</div>
+    <div class="field pk">id &nbsp; PK</div>
+    <div class="field">name</div>
+    <div class="field">phone</div>
+    <div class="field">vehicle_no</div>
+    <div class="field">status &nbsp; (在职/离职)</div>
+    <div class="field">create_time</div>
+  </div>
+
+  <!-- dispatch_task -->
+  <div class="entity">
+    <div class="header">dispatch_task 调度任务</div>
+    <div class="field pk">id &nbsp; PK</div>
+    <div class="field fk">order_id &nbsp; FK → order_info.id</div>
+    <div class="field fk">dispatcher_id &nbsp; FK → sys_user.id</div>
+    <div class="field">dispatch_area</div>
+    <div class="field">dispatch_time</div>
+    <div class="field">status</div>
+    <div class="field">adjust_reason</div>
+    <div class="field">create_time</div>
+  </div>
+
+  <!-- delivery_task -->
+  <div class="entity" style="grid-column: span 2;">
+    <div class="header">delivery_task 配送任务</div>
+    <div class="field pk">id &nbsp; PK</div>
+    <div class="field fk">dispatch_task_id &nbsp; FK → dispatch_task.id</div>
+    <div class="field fk">deliverer_id &nbsp; FK → delivery_person.id</div>
+    <div class="field">start_time</div>
+    <div class="field">end_time</div>
+    <div class="field">route_desc</div>
+    <div class="field">status &nbsp; (待配送/配送中/已完成)</div>
+    <div class="field">confirm_time</div>
+  </div>
+
+</div>
+
+<!-- 关联关系说明 -->
+<div class="relations">
+  <h3>实体关联关系说明</h3>
+  <table class="rel-table">
+    <tr>
+      <th>主表</th>
+      <th>关联表</th>
+      <th>关系</th>
+      <th>关联字段</th>
+      <th>说明</th>
+    </tr>
+    <tr>
+      <td>order_info</td>
+      <td>dish</td>
+      <td>N : 1</td>
+      <td>order_info.dish_id → dish.id</td>
+      <td>一个订单包含一种商品</td>
+    </tr>
+    <tr>
+      <td>order_info</td>
+      <td>sys_user</td>
+      <td>N : 1</td>
+      <td>order_info.create_by → sys_user.id</td>
+      <td>订单由用户创建</td>
+    </tr>
+    <tr>
+      <td>inventory</td>
+      <td>dish</td>
+      <td>1 : 1</td>
+      <td>inventory.dish_id → dish.id</td>
+      <td>每种商品对应一条库存记录</td>
+    </tr>
+    <tr>
+      <td>dispatch_task</td>
+      <td>order_info</td>
+      <td>1 : 1</td>
+      <td>dispatch_task.order_id → order_info.id</td>
+      <td>一个订单对应一个调度任务</td>
+    </tr>
+    <tr>
+      <td>dispatch_task</td>
+      <td>sys_user</td>
+      <td>N : 1</td>
+      <td>dispatch_task.dispatcher_id → sys_user.id</td>
+      <td>调度任务由调度员处理</td>
+    </tr>
+    <tr>
+      <td>delivery_task</td>
+      <td>dispatch_task</td>
+      <td>1 : 1</td>
+      <td>delivery_task.dispatch_task_id → dispatch_task.id</td>
+      <td>一个调度任务生成一个配送任务</td>
+    </tr>
+    <tr>
+      <td>delivery_task</td>
+      <td>delivery_person</td>
+      <td>N : 1</td>
+      <td>delivery_task.deliverer_id → delivery_person.id</td>
+      <td>配送任务指派给配送员</td>
+    </tr>
+  </table>
+</div>
+
+</body>
+</html>

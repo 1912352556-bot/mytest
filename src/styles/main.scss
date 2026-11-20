@@ -1,0 +1,460 @@
+/* 
+    Css --->    Sass 
+                Scss
+                Less
+                Stylus
+                Tailwindcss
+
+    Sass 下载第三方依赖 npm i sass -D
+    Sass 规定选择器不书写大括号
+    Seletor
+        样式名:样式值;
+        样式名:样式值;
+        样式名:样式值;
+    Scss 规定选择器书写大括号
+*/
+/* 首先导入 ElementPlus 主样式 */
+@import url("../../node_modules/element-plus/dist/index.css");
+
+/* ============================================================
+   生鲜主题配色
+   品牌主色：叶绿 #16A34A（hover 亮绿 #22C55E）
+   辅助色：果蔬橙 #FF7A45（金额、次要数据系列）
+   侧边栏：深绿 #14342B / 更深的 Logo 区 #0D241C，激活亮绿 #4ADE80
+   页面底色：淡绿灰 #F4F8F5
+   通过覆盖 Element Plus 的 CSS 变量实现整站换肤，组件内部无需逐个改色
+   ============================================================ */
+:root {
+    /* 业务侧可复用的主题变量 */
+    --app-brand: #16a34a;
+    --app-brand-light: #22c55e;
+    --app-brand-deep: #0f5132;
+    --app-accent: #ff7a45;
+    --app-accent-light: #ffa06b;
+    --app-teal: #14b8a6;
+    --app-bg: #f4f8f5;
+    --app-border: #e3efe7;
+    --app-sidebar-bg: #14342b;
+    --app-sidebar-deep: #0d241c;
+    --app-sidebar-text: #c7dfd3;
+    --app-sidebar-active: #4ade80;
+
+    /* Element Plus 主色及其派生色（浅色由主色与白色按比例混合得到） */
+    --el-color-primary: #16a34a;
+    --el-color-primary-light-3: #5cbf80;
+    --el-color-primary-light-5: #8bd1a5;
+    --el-color-primary-light-7: #b9e3c9;
+    --el-color-primary-light-8: #d0eddb;
+    --el-color-primary-light-9: #e8f6ed;
+    --el-color-primary-dark-2: #12823b;
+
+    /* 全站圆角统一收紧一点，界面更清爽 */
+    --el-border-radius-base: 6px;
+    --el-border-radius-small: 4px;
+
+    /* 表格：淡绿表头 + 淡绿悬停行 */
+    --el-table-header-bg-color: #f0f9f3;
+    --el-table-header-text-color: #1f3d2b;
+    --el-table-row-hover-bg-color: #f6fcf8;
+    --el-table-border-color: #e3efe7;
+
+    /* 其他控件的浅色背景跟随淡绿 */
+    --el-fill-color-light: #f3f9f5;
+    --el-fill-color-lighter: #f8fcfa;
+}
+
+/* 导入样式文件 */
+* {
+    /* 默认每个元素外边距 */
+    margin: 0;
+    /* 默认每个元素内边距 */
+    padding: 0;
+    /* 去掉每个元素的默认边框 */
+    border: none;
+    /* 设置宽度 高度 自动包含 padding 和 border
+    如果是 content-box 则会额外加上 padding 和 border */
+    box-sizing: border-box;
+    /* 设置一些元素获取焦点后显示的边框 例如 el-menu */
+    outline: none !important;
+}
+html,
+body,
+#app {
+    /* 去掉页面中的外边距 */
+    margin: 0;
+    /* 去掉页面中的内边距 */
+    padding: 0;
+    /* 设置高度参照物 */
+    height: 100%;
+    /* 生鲜主题：淡绿灰页面底色 */
+    background-color: #f4f8f5;
+    /* 设置字体 优先级依次降低*/
+    
+    /* 设置页面字体为平滑字体,在显示器中显示更加精细 仅仅支持 webkit 内核 */
+    -webkit-font-smoothing: antialiased;
+    /* 统一一个字符为 14px */
+    font-size: 14px;
+}
+@for $i from 1 through 1000 {
+    .w#{$i} {
+        width: #{$i}px !important;
+    }
+}
+
+/* 设置高度像素数全局样式 */
+@for $i from 1 through 1000 {
+    .h#{$i} {
+        height: #{$i}px !important;
+    }
+}
+@for $i from 1 through 500 {
+    /* margin-top */
+    .mt#{$i} {
+        margin-top: #{$i}px !important;
+    }
+
+    /* margin-right */
+    .mr#{$i} {
+        margin-right: #{$i}px !important;
+    }
+
+    /* margin-bottom */
+    .mb#{$i} {
+        margin-bottom: #{$i}px !important;
+    }
+
+    /* margin-left */
+    .ml#{$i} {
+        margin-left: #{$i}px !important;
+    }
+
+    /* margin */
+    .mg#{$i} {
+        margin: #{$i}px !important;
+    }
+
+    /* padding-top */
+    .pt#{$i} {
+        padding-top: #{$i}px !important;
+    }
+
+    /* padding-right */
+    .pr#{$i} {
+        padding-right: #{$i}px !important;
+    }
+
+    /* padding-bottom */
+    .pb#{$i} {
+        padding-bottom: #{$i}px !important;
+    }
+
+    /* padding-left */
+    .pl#{$i} {
+        padding-left: #{$i}px !important;
+    }
+
+    /* padding */
+    .pd#{$i} {
+        padding: #{$i}px !important;
+    }
+}
+@for $i from 1 through 100 {
+    .vh#{$i}{
+        height: #{$i}vh !important;
+    }
+    .vw#{$i}{
+        width: #{$i}vw !important;
+    }
+}
+.flex {
+    display: flex;
+}
+
+/* 设置主轴 交叉轴皆居中 */
+.flex-center {
+    @extend .flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 设置 主轴两端对齐 */
+.flex-space-between {
+    @extend .flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex-column{
+    @extend .flex;
+    flex-direction: column;
+}
+.text-shadow {
+    text-shadow: 5px 5px 3px #2b2b2b;
+}
+.box-shadow {
+    box-shadow: 3px 3px 5px #2b2b2b;
+}
+.cursor {
+    cursor: pointer;
+}
+.show {
+    /* 宽高占满父组件 */
+    width: 100%;
+    height: 100%;
+    /* 设置容器背景色 */
+    
+    @extend .flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.header-bgColor {
+    background: linear-gradient(to right, #14342b, #16a34a);
+}
+
+/* ========== 响应式适配 ========== */
+
+/* 断点变量 */
+$breakpoints: (
+    xs: 576px,
+    sm: 768px,
+    md: 992px,
+    lg: 1200px,
+    xl: 1400px
+);
+
+/* 表格响应式 */
+@media (max-width: 768px) {
+    .el-table {
+        font-size: 12px;
+    }
+    
+    .el-form--inline .el-form-item {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 12px;
+    }
+    
+    .el-dialog {
+        width: 95% !important;
+        margin: 10px auto !important;
+    }
+    
+    .el-card__body {
+        padding: 15px;
+    }
+    
+    .pagination-wrapper {
+        .el-pagination {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    }
+}
+
+/* 卡片布局响应式 */
+@media (max-width: 576px) {
+    .el-row {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    .el-col {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-bottom: 15px;
+    }
+}
+
+/* 文本溢出处理 */
+.text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.text-ellipsis-2 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* 通用滚动条样式 */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #cfdcd4;
+    border-radius: 3px;
+    
+    &:hover {
+        background-color: #a8c2b1;
+    }
+}
+
+::-webkit-scrollbar-track {
+    background-color: #f4f4f5;
+}
+
+/* 动画过渡 */
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
+.slide-fade-enter-active {
+    transition: all 0.3s ease;
+}
+
+.slide-fade-leave-active {
+    transition: all 0.2s ease;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+    transform: translateX(20px);
+    opacity: 0;
+}
+
+/* 页面容器通用样式 */
+.page-container {
+    padding: 20px;
+    background-color: #f4f8f5;
+    min-height: calc(100vh - 100px);
+}
+
+/* 卡片间距 */
+.card-gap {
+    margin-bottom: 20px;
+}
+
+/* 状态标签样式 */
+.status-tag {
+    &--success {
+        color: #67c23a;
+    }
+    
+    &--warning {
+        color: #e6a23c;
+    }
+    
+    &--danger {
+        color: #f56c6c;
+    }
+    
+    &--info {
+        color: #909399;
+    }
+}
+
+/* 价格样式 */
+.price-text {
+    color: #f56c6c;
+    font-weight: bold;
+    
+    &--large {
+        font-size: 18px;
+    }
+}
+
+/* 空状态提示 */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: #909399;
+    
+    .empty-icon {
+        font-size: 48px;
+        margin-bottom: 15px;
+    }
+    
+    .empty-text {
+        font-size: 14px;
+    }
+}
+
+/* ============================================================
+   生鲜主题：Element Plus 组件细节微调
+   （主色已通过 CSS 变量覆盖，这里只补充圆角、阴影、渐变等观感）
+   ============================================================ */
+
+/* 文字链接跟随品牌绿 */
+a {
+    color: var(--app-brand);
+}
+
+/* 卡片：青绿细边框 + 淡绿阴影，悬停时轻微上浮的视觉 */
+.el-card {
+    border-radius: 10px;
+    border-color: var(--app-border);
+    box-shadow: 0 1px 3px rgba(22, 163, 74, 0.06) !important;
+    transition: box-shadow 0.25s ease, border-color 0.25s ease;
+
+    &:hover {
+        border-color: #cfe8da;
+        box-shadow: 0 6px 18px rgba(22, 163, 74, 0.1) !important;
+    }
+}
+
+/* 表格：表头文字加深、表头分隔线更淡 */
+.el-table {
+    th.el-table__cell {
+        font-weight: 600;
+    }
+
+    .el-table__cell {
+        border-bottom-color: #eaf4ee;
+    }
+}
+
+/* 主按钮：叶绿渐变，悬停更亮 */
+.el-button--primary:not(.is-link):not(.is-plain):not(.is-text) {
+    background-image: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    border-color: #16a34a;
+
+    &:hover,
+    &:focus {
+        background-image: linear-gradient(135deg, #2ddc6d 0%, #1cb352 100%);
+        border-color: #1cb352;
+    }
+
+    &:active {
+        background-image: linear-gradient(135deg, #16a34a 0%, #12823b 100%);
+        border-color: #12823b;
+    }
+
+    &.is-disabled,
+    &.is-disabled:hover {
+        background-image: none;
+        background-color: var(--el-color-primary-light-5);
+        border-color: var(--el-color-primary-light-5);
+    }
+}
+
+/* 对话框/抽屉标题用深绿，视觉上更贴合品牌 */
+.el-dialog__title,
+.el-drawer__title {
+    color: #14342b;
+    font-weight: 600;
+}
+
+/* 面包屑末级文字加深 */
+.el-breadcrumb__inner.is-link:hover {
+    color: var(--app-brand);
+}
+
+/* 分页当前页、页签激活态继承主色，这里只补圆角 */
+.el-pagination.is-background .el-pager li {
+    border-radius: 4px;
+}
