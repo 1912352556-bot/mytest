@@ -1,3 +1,4 @@
+D:\myproject\wfxyend\a-a-a\backend\src\main\java\com\prefab\controller\MobileController.java
 D:\myproject\wfxyend\a-a-a\backend\src\main\java\com\prefab\entity\ScheduleTask.java
 D:\myproject\wfxyend\a-a-a\backend\src\main\java\com\prefab\controller\DeliveryController.java
 D:\myproject\wfxyend\a-a-a\backend\src\main\java\com\prefab\exception\GlobalExceptionHandler.java
@@ -55,3 +56,4 @@ D:\myproject\wfxyend\a-a-a\backend\src\main\java\com\prefab\entity\Order.java
 D:\myproject\wfxyend\a-a-a\backend\src\main\java\com\prefab\controller\InventoryController.java
 D:\myproject\wfxyend\a-a-a\backend\src\main\java\com\prefab\entity\InventoryRecord.java
 D:\myproject\wfxyend\a-a-a\backend\src\main\java\com\prefab\entity\OrderItem.java
+D:\myproject\wfxyend\a-a-a\backend\src\main\java\com\prefab\service\AutoDispatchService.java

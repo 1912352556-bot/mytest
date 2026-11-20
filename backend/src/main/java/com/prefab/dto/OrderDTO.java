@@ -35,6 +35,12 @@ public class OrderDTO {
     @Schema(description = "配送区域")
     private String deliveryArea;
 
+    @Schema(description = "配送地址经度（地图选点，可为空）")
+    private java.math.BigDecimal longitude;
+
+    @Schema(description = "配送地址纬度（地图选点，可为空）")
+    private java.math.BigDecimal latitude;
+
     @NotNull(message = "期望配送时间不能为空")
     @Schema(description = "期望配送时间")
     private LocalDateTime expectedDeliveryTime;

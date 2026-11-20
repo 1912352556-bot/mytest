@@ -39,7 +39,7 @@ public class User implements Serializable {
     @Schema(description = "性别：0-未知 1-男 2-女")
     private Integer gender;
 
-    @Schema(description = "角色：0-管理员 1-调度员 2-配送员")
+    @Schema(description = "角色：0-管理员 1-调度员 2-配送员 3-客户")
     private Integer role;
 
     @Schema(description = "头像URL")

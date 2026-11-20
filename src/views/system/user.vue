@@ -14,6 +14,7 @@
             <el-option label="管理员" :value="0" />
             <el-option label="调度员" :value="1" />
             <el-option label="配送员" :value="2" />
+            <el-option label="客户" :value="3" />
           </el-select>
         </el-form-item>
         <el-form-item label="状态">
@@ -114,6 +115,7 @@
             <el-option label="管理员" :value="0" />
             <el-option label="调度员" :value="1" />
             <el-option label="配送员" :value="2" />
+            <el-option label="客户" :value="3" />
           </el-select>
         </el-form-item>
         <el-form-item v-if="!isEdit" label="初始密码" prop="password">
@@ -260,13 +262,13 @@ const userList = ref<any[]>([])
 
 // 获取角色名称
 const getRoleName = (role: number) => {
-  const roleMap: Record<number, string> = { 0: '管理员', 1: '调度员', 2: '配送员' }
+  const roleMap: Record<number, string> = { 0: '管理员', 1: '调度员', 2: '配送员', 3: '客户' }
   return roleMap[role] || '未知'
 }
 
 // 获取角色标签类型
 const getRoleTagType = (role: number) => {
-  const typeMap: Record<number, string> = { 0: 'danger', 1: 'warning', 2: '' }
+  const typeMap: Record<number, string> = { 0: 'danger', 1: 'warning', 2: '', 3: 'success' }
   return typeMap[role] || 'info'
 }
 

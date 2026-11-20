@@ -70,11 +70,11 @@ WHERE t.dict_code = 'role_type'
 -- 4 调度员  5-8 配送员
 -- --------------------------------------------
 INSERT INTO `t_user` (`id`, `username`, `password`, `realname`, `phone`, `email`, `gender`, `role`, `status`) VALUES
-(4, 'scheduler02', '$2a$10$N.zmdrR5MaC6j4rdHdxQ/.Fv4vLuJrwEG3.ZZnj2hh3JnDvXuLSoG', '调度员王敏', '13800000011', 'wangmin@example.com', 2, 1, 1),
-(5, 'delivery02', '$2a$10$N.zmdrR5MaC6j4rdHdxQ/.Fv4vLuJrwEG3.ZZnj2hh3JnDvXuLSoG', '配送员赵强', '13800000012', 'zhaoqiang@example.com', 1, 2, 1),
-(6, 'delivery03', '$2a$10$N.zmdrR5MaC6j4rdHdxQ/.Fv4vLuJrwEG3.ZZnj2hh3JnDvXuLSoG', '配送员孙丽', '13800000013', 'sunli@example.com', 2, 2, 1),
-(7, 'delivery04', '$2a$10$N.zmdrR5MaC6j4rdHdxQ/.Fv4vLuJrwEG3.ZZnj2hh3JnDvXuLSoG', '配送员周凯', '13800000014', 'zhoukai@example.com', 1, 2, 1),
-(8, 'delivery05', '$2a$10$N.zmdrR5MaC6j4rdHdxQ/.Fv4vLuJrwEG3.ZZnj2hh3JnDvXuLSoG', '配送员陈晨', '13800000015', 'chenchen@example.com', 1, 2, 1);
+(4, 'scheduler02', '$2a$10$EKXOFOjn2Bve3t45194KkOdzGzywmeRw3yeekVf.YeURs2Z4.IaHi', '调度员王敏', '13800000011', 'wangmin@example.com', 2, 1, 1),
+(5, 'delivery02', '$2a$10$EKXOFOjn2Bve3t45194KkOdzGzywmeRw3yeekVf.YeURs2Z4.IaHi', '配送员赵强', '13800000012', 'zhaoqiang@example.com', 1, 2, 1),
+(6, 'delivery03', '$2a$10$EKXOFOjn2Bve3t45194KkOdzGzywmeRw3yeekVf.YeURs2Z4.IaHi', '配送员孙丽', '13800000013', 'sunli@example.com', 2, 2, 1),
+(7, 'delivery04', '$2a$10$EKXOFOjn2Bve3t45194KkOdzGzywmeRw3yeekVf.YeURs2Z4.IaHi', '配送员周凯', '13800000014', 'zhoukai@example.com', 1, 2, 1),
+(8, 'delivery05', '$2a$10$EKXOFOjn2Bve3t45194KkOdzGzywmeRw3yeekVf.YeURs2Z4.IaHi', '配送员陈晨', '13800000015', 'chenchen@example.com', 1, 2, 1);
 
 -- 配送员。assignee_id / delivery_person_id 均指向本表主键（与调度分配接口一致）
 -- 状态：0 空闲  1 配送中  2 休息

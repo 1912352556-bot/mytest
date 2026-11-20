@@ -69,8 +69,8 @@ declare interface RegUser {
   path?: string
 }
 
-/** 角色类型：0-管理员 1-调度员 2-配送员 */
-declare type RoleType = 0 | 1 | 2
+/** 角色类型：0-管理员 1-调度员 2-配送员 3-客户 */
+declare type RoleType = 0 | 1 | 2 | 3
 
 /** 角色枚举映射 */
 declare const RoleMap: Record<RoleType, string>
@@ -220,6 +220,10 @@ declare interface Order {
   customerPhone: string
   deliveryAddress: string
   deliveryArea: string
+  /** 配送地址经度（地图选点） */
+  longitude?: number
+  /** 配送地址纬度（地图选点） */
+  latitude?: number
   deliveryLocation?: LocationInfo  // 配送位置坐标
   expectedDeliveryTime: string
   actualDeliveryTime?: string
@@ -373,6 +377,12 @@ declare interface DeliveryTask {
   pickupTime?: string
   deliveryTime?: string
   remark?: string
+  /** 期望送达时间（来自订单，移动端使用） */
+  expectedDeliveryTime?: string
+  /** 关联订单状态：0-待调度 1-已调度 2-配送中 3-已完成 4-已取消 */
+  orderStatus?: number
+  /** 关联订单金额 */
+  totalAmount?: number
   createTime?: string
   longitude?: number // 客户地址经度
   latitude?: number  // 客户地址纬度

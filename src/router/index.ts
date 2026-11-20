@@ -212,6 +212,68 @@ const layoutRoutes: RouteRecordRaw[] = [
   }
 ]
 
+/* 移动端路由（客户 role=3 / 配送员 role=2） */
+const mobileRoutes: RouteRecordRaw[] = [
+  {
+    path: '/m/login',
+    name: 'MobileLogin',
+    component: () => import('@/views/mobile/login/index.vue'),
+    meta: { title: '移动端登录', hidden: true, mobile: true }
+  },
+  {
+    path: '/m',
+    name: 'MobileLayout',
+    component: () => import('@/views/mobile/layout/index.vue'),
+    meta: { title: '移动端', mobile: true },
+    children: [
+      /* 客户端 */
+      {
+        path: 'customer/home',
+        name: 'MCustomerHome',
+        component: () => import('@/views/mobile/customer/home.vue'),
+        meta: { title: '生鲜商城', roles: [3] }
+      },
+      {
+        path: 'customer/orders',
+        name: 'MCustomerOrders',
+        component: () => import('@/views/mobile/customer/orders.vue'),
+        meta: { title: '我的订单', roles: [3] }
+      },
+      {
+        path: 'customer/order/:id',
+        name: 'MCustomerOrderDetail',
+        component: () => import('@/views/mobile/customer/order-detail.vue'),
+        meta: { title: '订单详情', roles: [3], hidden: true }
+      },
+      {
+        path: 'customer/mine',
+        name: 'MCustomerMine',
+        component: () => import('@/views/mobile/customer/mine.vue'),
+        meta: { title: '我的', roles: [3] }
+      },
+      /* 配送员端 */
+      {
+        path: 'courier/tasks',
+        name: 'MCourierTasks',
+        component: () => import('@/views/mobile/courier/tasks.vue'),
+        meta: { title: '配送任务', roles: [2] }
+      },
+      {
+        path: 'courier/task/:id',
+        name: 'MCourierTaskDetail',
+        component: () => import('@/views/mobile/courier/task-detail.vue'),
+        meta: { title: '任务详情', roles: [2], hidden: true }
+      },
+      {
+        path: 'courier/mine',
+        name: 'MCourierMine',
+        component: () => import('@/views/mobile/courier/mine.vue'),
+        meta: { title: '我的', roles: [2] }
+      }
+    ]
+  }
+]
+
 /* 404页面 */
 const errorRoutes: RouteRecordRaw[] = [
   {
@@ -225,7 +287,7 @@ const errorRoutes: RouteRecordRaw[] = [
 /* 创建路由实例 */
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [...baseRoutes, ...layoutRoutes, ...errorRoutes],
+  routes: [...baseRoutes, ...layoutRoutes, ...mobileRoutes, ...errorRoutes],
   /* 滚动行为 */
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {

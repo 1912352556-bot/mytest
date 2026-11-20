@@ -3,7 +3,29 @@
  */
 import axios, { type AxiosInstance, type AxiosRequestConfig, type InternalAxiosRequestConfig } from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { showToast } from 'vant'
 import router from '@/router'
+
+/* 当前是否处于移动端页面（/m 开头） */
+const isMobileView = (): boolean => window.location.pathname.startsWith('/m')
+
+/* 统一错误提示：移动端用 Vant Toast，PC 端用 Element Message */
+const errorTip = (msg: string): void => {
+  if (isMobileView()) {
+    showToast(msg)
+  } else {
+    ElMessage.error(msg)
+  }
+}
+
+/* 统一警告提示 */
+const warnTip = (msg: string): void => {
+  if (isMobileView()) {
+    showToast(msg)
+  } else {
+    ElMessage.warning(msg)
+  }
+}
 
 /* Token存储的Key */
 const TOKEN_KEY = 'access_token'
@@ -73,7 +95,7 @@ request.interceptors.response.use(
     }
     
     /* 业务错误处理 */
-    ElMessage.error(data.msg || '请求失败')
+    errorTip(data.msg || '请求失败')
     return Promise.reject(new Error(data.msg || '请求失败'))
   },
   (error) => {
@@ -85,16 +107,24 @@ request.interceptors.response.use(
       switch (status) {
         case 401:
           /* Token过期或无效 */
-          if (!isRefreshing) {
+          removeToken()
+          localStorage.removeItem('userInfo')
+          if (isMobileView()) {
+            /* 移动端：直接回登录页，不弹 Element 确认框 */
+            if (!isRefreshing) {
+              isRefreshing = true
+              showToast('登录状态已过期，请重新登录')
+              router.push({ path: '/m/login' }).finally(() => {
+                isRefreshing = false
+              })
+            }
+          } else if (!isRefreshing) {
             isRefreshing = true
             ElMessageBox.confirm('登录状态已过期，请重新登录', '系统提示', {
               confirmButtonText: '重新登录',
               cancelButtonText: '取消',
               type: 'warning'
             }).then(() => {
-              /* 清除Token和用户信息 */
-              removeToken()
-              localStorage.removeItem('userInfo')
               /* 跳转到登录页 */
               router.push({ path: '/' })
             }).finally(() => {
@@ -103,23 +133,23 @@ request.interceptors.response.use(
           }
           break
         case 403:
-          ElMessage.error('没有权限访问该资源')
+          errorTip('没有权限访问该资源')
           break
         case 404:
-          ElMessage.error('请求的资源不存在')
+          errorTip('请求的资源不存在')
           break
         case 500:
-          ElMessage.error(data?.msg || '服务器内部错误')
+          errorTip(data?.msg || '服务器内部错误')
           break
         default:
-          ElMessage.error(data?.msg || `请求失败: ${status}`)
+          errorTip(data?.msg || `请求失败: ${status}`)
       }
     } else if (message.includes('Network Error')) {
-      ElMessage.warning('网络连接失败，请检查网络')
+      warnTip('网络连接失败，请检查网络')
     } else if (message.includes('timeout')) {
-      ElMessage.warning('请求超时，请稍后重试')
+      warnTip('请求超时，请稍后重试')
     } else {
-      ElMessage.error(message || '请求失败')
+      errorTip(message || '请求失败')
     }
     
     return Promise.reject(error)

@@ -1,0 +1,142 @@
+/* ============================================================
+   移动端（/m）全局样式
+   与 PC 的 Element Plus 主题共用一套生鲜绿配色
+   ============================================================ */
+
+:root {
+  /* Vant 主色跟随品牌绿 */
+  --van-primary-color: #16a34a;
+  --van-success-color: #16a34a;
+  --van-danger-color: #f56c6c;
+  --van-warning-color: #ff7a45;
+  --van-text-color: #1f2d24;
+  --van-background: #f4f8f5;
+  --van-background-2: #ffffff;
+  --van-border-color: #e3efe7;
+  --van-radius-md: 8px;
+  --van-nav-bar-background: #ffffff;
+}
+
+/* 移动端页面滚动容器：整页高度交给布局，禁止 body 级滚动条层叠 */
+.m-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--van-background);
+}
+
+.m-app__body {
+  flex: 1;
+  overflow-x: hidden;
+}
+
+.m-page {
+  padding: 12px 12px 24px;
+}
+
+/* 通用卡片 */
+.m-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(22, 163, 74, 0.06);
+}
+
+.m-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.m-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #14342b;
+}
+
+.m-muted {
+  color: #8a9a90;
+  font-size: 12px;
+}
+
+.m-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.m-price {
+  color: #ff7a45;
+  font-weight: 700;
+}
+
+.m-price::before {
+  content: '¥';
+  font-size: 0.8em;
+  margin-right: 1px;
+}
+
+.m-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.m-empty {
+  padding: 48px 0;
+}
+
+/* 底部悬浮操作条（购物车、任务操作） */
+.m-fixed-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 50px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+  background: #fff;
+  border-top: 1px solid var(--van-border-color);
+  box-shadow: 0 -2px 10px rgba(20, 52, 43, 0.06);
+}
+
+/* 状态标签配色 */
+.m-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 18px;
+  background: #eef7f1;
+  color: #16a34a;
+}
+
+.m-tag--wait {
+  background: #fff5e8;
+  color: #d97706;
+}
+
+.m-tag--run {
+  background: #e8f2ff;
+  color: #2563eb;
+}
+
+.m-tag--done {
+  background: #eef7f1;
+  color: #16a34a;
+}
+
+.m-tag--cancel {
+  background: #f4f4f5;
+  color: #909399;
+}
+
+.m-tag--error {
+  background: #fdecec;
+  color: #e5484d;
+}

@@ -51,8 +51,8 @@ public class WebConfig implements WebMvcConfigurer {
                         // 静态资源
                         "/favicon.ico",
                         "/error",
-                        // 暂时放行所有接口（开发阶段）
-                        "/**"
+                        // 商品图片等静态资源访问（上传接口仍需登录）
+                        "/file/image/**"
                 );
     }
 }

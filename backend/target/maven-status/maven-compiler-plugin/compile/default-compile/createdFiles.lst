@@ -6,7 +6,9 @@ com\prefab\mapper\InventoryRecordMapper.class
 com\prefab\entity\DishCategory.class
 com\prefab\controller\OrderController$OrderItemRequest.class
 com\prefab\entity\InventoryRecord.class
+com\prefab\service\AutoDispatchService$DispatchResult.class
 com\prefab\entity\ScheduleTask.class
+com\prefab\service\AutoDispatchService.class
 com\prefab\service\OrderService.class
 com\prefab\dto\OrderDTO.class
 com\prefab\controller\ScheduleController$AssignRequest.class
@@ -15,6 +17,8 @@ com\prefab\mapper\DictTypeMapper.class
 com\prefab\controller\DishController.class
 com\prefab\entity\Order.class
 com\prefab\entity\Inventory.class
+com\prefab\controller\MobileController$MobileOrderItem.class
+com\prefab\controller\MobileController$MobileOrderRequest.class
 com\prefab\entity\DeliveryTask.class
 com\prefab\service\UserService.class
 com\prefab\mapper\UserMapper.class
@@ -24,6 +28,7 @@ com\prefab\dto\UserQueryDTO.class
 com\prefab\controller\DictController.class
 com\prefab\dto\OrderQueryDTO.class
 com\prefab\dto\OrderDTO$OrderItemDTO.class
+com\prefab\controller\OrderController$DeliveryLocationRequest.class
 com\prefab\controller\StatisticsController.class
 com\prefab\mapper\DishCategoryMapper.class
 com\prefab\vo\OrderVO.class
@@ -59,12 +64,14 @@ com\prefab\vo\UserVO.class
 com\prefab\vo\DashboardVO.class
 com\prefab\entity\DictType.class
 com\prefab\controller\OrderController.class
+com\prefab\controller\MobileController.class
 com\prefab\mapper\DictDataMapper.class
 com\prefab\service\impl\UserServiceImpl.class
 com\prefab\dto\LoginDTO.class
 com\prefab\controller\ScheduleController$BatchResult.class
 com\prefab\vo\LoginVO.class
 com\prefab\config\JacksonConfig.class
+com\prefab\controller\ScheduleController$BatchRequest.class
 com\prefab\mapper\DeliveryPersonMapper.class
 com\prefab\PrefabDishScheduleApplication.class
 com\prefab\utils\JwtUtil.class

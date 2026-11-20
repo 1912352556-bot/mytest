@@ -38,6 +38,12 @@ public class Order implements Serializable {
     @Schema(description = "配送区域")
     private String deliveryArea;
 
+    @Schema(description = "配送地址经度（地图选点）")
+    private BigDecimal longitude;
+
+    @Schema(description = "配送地址纬度（地图选点）")
+    private BigDecimal latitude;
+
     @Schema(description = "期望配送时间")
     private LocalDateTime expectedDeliveryTime;
 

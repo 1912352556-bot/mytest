@@ -29,6 +29,7 @@ public class OrderController {
     private final OrderMapper orderMapper;
     private final DishMapper dishMapper;
     private final OrderService orderService;
+    private final com.prefab.service.AutoDispatchService autoDispatchService;
 
     @Operation(summary = "获取订单列表")
     @GetMapping("/list")
@@ -61,7 +62,8 @@ public class OrderController {
 
     @Operation(summary = "新增订单")
     @PostMapping
-    public Result<Object> createOrder(@RequestBody CreateOrderRequest request) {
+    public Result<Object> createOrder(@RequestBody CreateOrderRequest request,
+                                      jakarta.servlet.http.HttpServletRequest httpRequest) {
         try {
             // 转换为 DTO
             com.prefab.dto.OrderDTO orderDTO = new com.prefab.dto.OrderDTO();
@@ -71,6 +73,10 @@ public class OrderController {
             orderDTO.setDeliveryArea(request.getDeliveryArea());
             orderDTO.setExpectedDeliveryTime(request.getExpectedDeliveryTime());
             orderDTO.setRemark(request.getRemark());
+            if (request.getDeliveryLocation() != null) {
+                orderDTO.setLongitude(request.getDeliveryLocation().getLongitude());
+                orderDTO.setLatitude(request.getDeliveryLocation().getLatitude());
+            }
             
             // 转换订单明细
             java.util.List<com.prefab.dto.OrderDTO.OrderItemDTO> itemDTOs = new java.util.ArrayList<>();
@@ -84,10 +90,23 @@ public class OrderController {
             }
             orderDTO.setOrderItems(itemDTOs);
             
-            // 调用 Service 创建订单（会自动扣减库存）
-            Long orderId = orderService.createOrder(orderDTO, 1L); // TODO: 从登录上下文获取 creatorId
-            
-            return Result.success(java.util.Map.of("orderId", orderId));
+            // 调用 Service 创建订单（会自动扣减库存），创建人取当前登录用户
+            Long creatorId = 1L;
+            Object loginUserId = httpRequest.getAttribute("userId");
+            if (loginUserId != null) {
+                creatorId = Long.valueOf(loginUserId.toString());
+            }
+            Long orderId = orderService.createOrder(orderDTO, creatorId);
+
+            /* 下单后自动派单（可用 dispatch.auto-assign-on-create=false 关闭） */
+            com.prefab.service.AutoDispatchService.DispatchResult dispatch =
+                    autoDispatchService.autoAssignOnCreate(orderId);
+            java.util.Map<String, Object> data = new java.util.LinkedHashMap<>();
+            data.put("orderId", orderId);
+            data.put("autoAssigned", dispatch.isAssigned());
+            data.put("dispatchMessage", dispatch.getMessage());
+            data.put("deliveryPersonName", dispatch.getDeliveryPersonName());
+            return Result.success(data);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.fail("创建订单失败: " + e.getMessage());
@@ -125,6 +144,8 @@ public class OrderController {
         try {
             String reason = request != null && request.getReason() != null ? request.getReason() : "用户取消";
             orderService.cancelOrder(id, reason);
+            /* 同步释放配送任务/调度任务，避免配送员端残留任务 */
+            autoDispatchService.releaseOrderDispatch(id, "订单已取消：" + reason, 4);
             return Result.success();
         } catch (Exception e) {
             return Result.fail(e.getMessage());
@@ -186,7 +207,19 @@ public class OrderController {
         private String deliveryArea;
         private java.time.LocalDateTime expectedDeliveryTime;
         private String remark;
+        /** 地图选点位置 */
+        private DeliveryLocationRequest deliveryLocation;
         private java.util.List<OrderItemRequest> orderItems;
+    }
+
+    /** 地图选点位置（高德地图返回） */
+    @lombok.Data
+    static class DeliveryLocationRequest {
+        private String address;
+        private java.math.BigDecimal longitude;
+        private java.math.BigDecimal latitude;
+        private String city;
+        private String district;
     }
 
     @lombok.Data
